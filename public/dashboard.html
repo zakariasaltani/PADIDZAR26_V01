@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Tableau de bord V4 - Marrakech-Safi</title>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+</head>
+<body>
+  <div class="top-banner official-banner">
+    <div class="banner-logo-wrap">
+      <img src="img/logo.png" alt="Logo DRA Marrakech-Safi" class="banner-logo"/>
+    </div>
+    <div>
+      <div class="banner-title">Direction Régionale de l'Agriculture de Marrakech-Safi</div>
+      <div class="banner-subtitle">Système SIG de gestion des projets agricoles · V4</div>
+    </div>
+  </div>
+
+  <div id="navbar-slot"></div>
+
+  <div class="container dashboard-page" id="dashboard-export-root">
+    <div class="header header-dashboard">
+      <div>
+        <h1 class="title">Tableau de bord institutionnel</h1>
+        <p class="subtitle">Structure Programme → Appel d’Offre → Marchés → Paiements avec cartographie et fiche technique institutionnelle.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" id="btn-print" type="button">🖨️ Imprimer</button>
+        <button class="btn-primary" id="btn-export-pdf" type="button">📄 Export PDF</button>
+        <button class="btn-primary" id="btn-tech-sheet" type="button">🧾 Fiche technique</button>
+      </div>
+    </div>
+
+    <section class="kpi-grid kpi-grid-6">
+      <div class="kpi"><div class="kpi-label">Programmes</div><div class="kpi-value" id="kpi-programmes">—</div></div>
+      <div class="kpi"><div class="kpi-label">Projets</div><div class="kpi-value" id="kpi-projets">—</div></div>
+      <div class="kpi"><div class="kpi-label">Appels d’offre</div><div class="kpi-value" id="kpi-ao">—</div></div>
+      <div class="kpi"><div class="kpi-label">Marchés</div><div class="kpi-value" id="kpi-marches">—</div></div>
+      <div class="kpi"><div class="kpi-label">Engagements</div><div class="kpi-value" id="kpi-total-marches">—</div><div class="kpi-foot">MAD</div></div>
+      <div class="kpi"><div class="kpi-label">Paiements</div><div class="kpi-value" id="kpi-paiements">—</div><div class="kpi-foot">MAD</div></div>
+    </section>
+
+    <section class="grid-2 charts-2x2">
+      <div class="card-lite"><div class="card-head"><h3>Répartition des projets par statut</h3><div class="hint">Vue globale</div></div><div class="card-body"><canvas id="chart-projets-statut" height="120"></canvas></div></div>
+      <div class="card-lite"><div class="card-head"><h3>Budgets projets par programme</h3><div class="hint">Top 12</div></div><div class="card-body"><canvas id="chart-budget-programme" height="120"></canvas></div></div>
+      <div class="card-lite"><div class="card-head"><h3>Engagements / Paiements / Reste</h3><div class="hint">Pilotage financier</div></div><div class="card-body"><canvas id="chart-finance" height="120"></canvas></div></div>
+      <div class="card-lite"><div class="card-head"><h3>Investissements par commune</h3><div class="hint">Top 10</div></div><div class="card-body"><canvas id="chart-communes" height="120"></canvas></div></div>
+    </section>
+
+    <section class="grid-2" style="margin-top:12px;">
+      <div class="card-lite">
+        <div class="card-head"><h3>Marchés par appel d’offre</h3><div class="hint">Montants par AO</div></div>
+        <div class="card-body"><canvas id="chart-ao" height="120"></canvas></div>
+      </div>
+      <div class="card-lite">
+        <div class="card-head"><h3>Légende de suivi</h3><div class="hint">Lecture rapide</div></div>
+        <div class="card-body legend-panel">
+          <div class="legend-row"><span class="legend-dot dot-projet"></span> Projet géolocalisé</div>
+          <div class="legend-row"><span class="legend-dot dot-commune"></span> Limite communale</div>
+          <div class="legend-row"><span class="legend-dot dot-invest"></span> Plus le cercle est grand, plus l’investissement du marché est élevé.</div>
+          <div class="legend-row"><span class="legend-dot dot-paye"></span> Le popup affiche AO, marché, engagement et paiement.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="card-lite" style="margin-top:12px;">
+      <div class="card-head"><h3>Carte des investissements</h3><div class="hint" id="map-hint">Chargement…</div></div>
+      <div class="card-body"><div id="dash-map"></div></div>
+    </div>
+
+    <div class="card-lite" style="margin-top:12px;">
+      <div class="card-head">
+        <h3>Rapport filtré multi-niveaux</h3>
+        <div class="hint">Filtrer par programme, appel d’offre, marché, exercice ou commune puis générer la carte et la fiche technique.</div>
+      </div>
+      <div class="card-body">
+        <div class="filters">
+          <select id="f-programme" class="input"><option value="">Tous programmes</option></select>
+          <select id="f-projet" class="input"><option value="">Tous projets</option></select>
+          <select id="f-ao" class="input"><option value="">Tous AO</option></select>
+          <select id="f-marche" class="input"><option value="">Tous marchés</option></select>
+          <select id="f-exercice" class="input"><option value="">Tous exercices</option></select>
+          <select id="f-commune" class="input"><option value="">Toutes communes</option></select>
+          <select id="f-statut" class="input">
+            <option value="">Tous statuts</option>
+            <option value="PLANIFIE">PLANIFIE</option>
+            <option value="EN_COURS">EN_COURS</option>
+            <option value="TERMINE">TERMINE</option>
+            <option value="SUSPENDU">SUSPENDU</option>
+          </select>
+          <div class="datebox"><label>Du</label><input id="f-date-from" class="input" type="date"/></div>
+          <div class="datebox"><label>Au</label><input id="f-date-to" class="input" type="date"/></div>
+          <button class="btn-secondary" id="btn-report" type="button">Générer</button>
+          <a class="btn-secondary" id="btn-csv" href="#" target="_blank" rel="noreferrer">Exporter CSV</a>
+        </div>
+        <div class="report-summary" id="report-summary">Aucun rapport généré.</div>
+        <div class="table-wrap" style="margin-top:10px;">
+          <table class="table" id="table-report">
+            <thead>
+              <tr>
+                <th>Programme</th><th>Projet</th><th>AO</th><th>Statut</th><th>Commune</th><th>Marché</th><th>Fournisseur</th><th>Engagement</th><th>Paiement</th><th>Reste</th><th>Date</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="programmes">Programmes</button>
+      <button class="tab" data-tab="projets">Projets</button>
+      <button class="tab" data-tab="marches">Marchés</button>
+      <button class="tab" data-tab="beneficiaires">Bénéficiaires</button>
+      <button class="tab" data-tab="fournisseurs">Fournisseurs</button>
+    </div>
+
+    <section class="panel active" id="panel-programmes">
+      <div class="card-lite"><div class="card-head"><h3>Programmes</h3><div class="filters"><input id="search-programmes" class="search" placeholder="Rechercher programme/fonds..."/></div></div>
+        <div class="table-wrap"><table class="table" id="table-dash-programmes"><thead><tr><th>ID</th><th>Programme</th><th>Fonds</th><th>Projets</th><th>AO</th><th>Achèvement</th><th>Couverture</th><th>Budget</th><th>Engagement</th><th>Paiement</th><th>Reste</th><th>Détails</th></tr></thead><tbody></tbody></table></div>
+        <div class="hint" id="count-dash-programmes"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-projets">
+      <div class="card-lite"><div class="card-head"><h3>Projets</h3><div class="filters"><input id="search-projets" class="search" placeholder="Rechercher..."/></div></div>
+        <div class="table-wrap"><table class="table" id="table-dash-projets"><thead><tr><th>ID</th><th>Code</th><th>Intitulé</th><th>Statut</th><th>Programme</th><th>Commune</th><th>AO</th><th>Budget</th><th>Engagement</th><th>Paiement</th><th>Reste</th></tr></thead><tbody></tbody></table></div>
+        <div class="hint" id="count-dash-projets"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-marches">
+      <div class="card-lite"><div class="card-head"><h3>Marchés</h3><div class="filters"><input id="search-marches" class="search" placeholder="Rechercher..."/></div></div>
+        <div class="table-wrap"><table class="table" id="table-dash-marches"><thead><tr><th>ID</th><th>AO</th><th>Numéro</th><th>Projet</th><th>Programme</th><th>Fournisseur</th><th>Montant</th><th>Paiement</th><th>Reste</th><th>Statut</th><th>Date</th></tr></thead><tbody></tbody></table></div>
+        <div class="hint" id="count-dash-marches"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-beneficiaires">
+      <div class="card-lite"><div class="card-head"><h3>Bénéficiaires</h3><div class="filters"><input id="search-beneficiaires" class="search" placeholder="Rechercher..."/></div></div>
+        <div class="table-wrap"><table class="table" id="table-dash-beneficiaires"><thead><tr><th>Type</th><th>Nom</th><th>Président</th><th>Adhérents</th><th>Date création</th><th>Observations</th></tr></thead><tbody></tbody></table></div>
+        <div class="hint" id="count-dash-beneficiaires"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-fournisseurs">
+      <div class="card-lite"><div class="card-head"><h3>Fournisseurs</h3><div class="filters"><input id="search-fournisseurs" class="search" placeholder="Rechercher..."/></div></div>
+        <div class="table-wrap"><table class="table" id="table-dash-fournisseurs"><thead><tr><th>ID</th><th>Nom</th><th>ICE</th><th>Marchés</th><th>Engagement</th><th>Reste</th><th>Téléphone</th><th>Email</th></tr></thead><tbody></tbody></table></div>
+        <div class="hint" id="count-dash-fournisseurs"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="modal-details" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title" id="modal-title">Détails programme</div>
+          <div class="modal-sub" id="modal-sub">—</div>
+          <select id="modal-projet-filter" class="input" style="min-width:260px"><option value="">Tous projets</option></select>
+        </div>
+        <button class="btn-secondary" id="btn-modal-close" type="button">Fermer</button>
+      </div>
+      <div class="modal-body">
+        <div class="grid-2">
+          <div class="card-lite"><div class="card-head"><h3>Statuts projets</h3></div><div class="card-body"><canvas id="chart-prog-statut" height="120"></canvas></div></div>
+          <div class="card-lite"><div class="card-head"><h3>Budgets projets</h3></div><div class="card-body"><canvas id="chart-prog-budgets" height="120"></canvas></div></div>
+        </div>
+        <div class="grid-2" style="margin-top:12px;">
+          <div class="card-lite"><div class="card-head"><h3>Projets</h3></div><div class="table-wrap"><table class="table" id="table-prog-projets"><thead><tr><th>ID</th><th>Code</th><th>Intitulé</th><th>Statut</th><th>Budget</th><th>Marchés</th><th>Commune</th></tr></thead><tbody></tbody></table></div></div>
+          <div class="card-lite"><div class="card-head"><h3>Marchés</h3></div><div class="table-wrap"><table class="table" id="table-prog-marches"><thead><tr><th>ID</th><th>Numéro</th><th>Projet</th><th>Fournisseur</th><th>Montant</th><th>Date</th></tr></thead><tbody></tbody></table></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="/js/forbidden.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

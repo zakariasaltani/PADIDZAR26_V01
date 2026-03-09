@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WebSIG Marrakech-Safi - Bénéficiaires</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projets.css" />
+  <link rel="stylesheet" href="css/beneficiaires.css" />
+</head>
+<body>
+<div class="top-banner">
+  <div class="banner-title">Direction Régionale de l'Agriculture de MARRAKECH-SAFI</div>
+  <div class="banner-subtitle">Plate-Forme de gestion des bénéficiaires</div>
+</div>
+<div id="navbar-slot"></div>
+
+<div class="container">
+  <div class="header" style="margin-bottom:10px;">
+    <div>
+      <h1 class="title">👥 Gestion des bénéficiaires</h1>
+      <p class="subtitle">Ajout, modification et mise à jour des bénéficiaires liés aux projets.</p>
+    </div>
+    <div class="pill">API: /api/beneficiaires</div>
+  </div>
+
+  <div class="layout benef-layout">
+    <div class="card-lite">
+      <div class="card-head">
+        <h3 id="form-title">➕ Nouveau bénéficiaire</h3>
+        <button class="btn-secondary" id="btn-reset" type="button">Réinitialiser</button>
+      </div>
+
+      <form id="form-beneficiaire" class="form">
+        <input type="hidden" name="id" />
+
+        <div class="form-row">
+          <label>Type *</label>
+          <input name="type" required placeholder="Ex: Coopérative, Association, GIE, Agriculteur individuel" />
+        </div>
+
+        <div class="form-row">
+          <label>Nom du bénéficiaire *</label>
+          <input name="nom_benef" required placeholder="Nom de la structure ou du bénéficiaire" />
+        </div>
+
+        <div class="form-row">
+          <label>Nom du président</label>
+          <input name="nom_president" placeholder="Nom du président / représentant" />
+        </div>
+
+        <div class="form-2">
+          <div class="form-row">
+            <label>Nombre d'adhérents</label>
+            <input name="nbre_adherent" type="number" min="0" step="1" />
+          </div>
+          <div class="form-row">
+            <label>Date de création</label>
+            <input name="date_creation" type="date" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Observations</label>
+          <textarea name="observations" rows="5" placeholder="Informations complémentaires"></textarea>
+        </div>
+
+        <button class="btn" type="submit">Enregistrer</button>
+        <div class="hint" id="msg-benef"></div>
+      </form>
+    </div>
+
+    <div class="card-lite">
+      <div class="card-head">
+        <h3>📋 Liste des bénéficiaires</h3>
+        <input id="search-benef" class="search" placeholder="Rechercher (type, nom, président...)" />
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="table-beneficiaires">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Bénéficiaire</th>
+              <th>Président</th>
+              <th>Adhérents</th>
+              <th>Date création</th>
+              <th>Observations</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="hint" id="count-benef"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/beneficiaires.js"></script>
+</body>
+</html>

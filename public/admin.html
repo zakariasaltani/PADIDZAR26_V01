@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Administration - Marrakech-Safi</title>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/finance.css"/>
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+</head>
+<body>
+ <!-- Bannière institutionnelle -->
+<div class="top-banner">
+  <div class="banner-title">
+    Direction Régionale de l'Agriculture de MARRAKECH-SAFI
+  </div>
+  <div class="banner-subtitle">
+    Plate-Forme de gestion des projets
+  </div>
+</div>
+
+  <div id="navbar-slot"></div>
+
+  <div class="container">
+    <div class="header" style="margin-bottom:10px;">
+      <div>
+        <h1 class="title">🛡️ Administration</h1>
+        <p class="subtitle">Créer des utilisateurs et gérer leurs autorisations.</p>
+      </div>
+      <div class="pill">API: /api/admin/*</div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="card-lite">
+        <div class="card-head">
+          <h3 id="user-form-title">➕ Ajouter un utilisateur</h3>
+          <button class="btn-secondary" id="btn-user-reset" type="button">Réinitialiser</button>
+        </div>
+
+        <form id="form-user" class="form">
+          <input type="hidden" name="id"/>
+
+          <div class="form-row">
+            <label>Username *</label>
+            <input name="username" required placeholder="ex: z.said" />
+          </div>
+
+          <div class="form-row">
+            <label>Nom complet</label>
+            <input name="full_name" placeholder="..." />
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Rôle</label>
+              <select name="role">
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Actif</label>
+              <select name="is_active">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Mot de passe *</label>
+            <input name="password" type="password" autocomplete="new-password" required />
+          </div>
+
+          <button class="btn" type="submit">Enregistrer</button>
+          <div class="hint" id="msg-user"></div>
+        </form>
+      </div>
+
+      <div class="card-lite">
+        <div class="card-head">
+          <h3>📋 Utilisateurs</h3>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" id="table-users">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Nom</th>
+                <th>Rôle</th>
+                <th>Actif</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="hint">Cliquez sur <b>Permissions</b> pour gérer les accès d’un utilisateur.</div>
+      </div>
+    </div>
+
+    <div class="card-lite" id="perm-card" style="display:none; margin-top:14px;">
+      <div class="card-head">
+        <h3 id="perm-title">🔧 Permissions</h3>
+        <button class="btn-secondary" id="btn-perm-close" type="button">Fermer</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="table-perms">
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Lecture</th>
+              <th>Écriture</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+        <button class="btn-secondary" id="btn-perm-refresh" type="button">Rafraîchir</button>
+        <button class="btn" id="btn-perm-save" type="button">💾 Enregistrer</button>
+      </div>
+
+      <div class="hint" id="msg-perm"></div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

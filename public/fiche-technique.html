@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Fiche technique institutionnelle - DRA Marrakech-Safi</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/fiche-technique.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+  <div class="sheet-page" id="sheet-export-root">
+    <header class="sheet-header">
+      <div class="sheet-brand">
+        <img src="img/logo.png" alt="Logo DRA Marrakech-Safi" class="sheet-logo"/>
+        <div>
+          <div class="sheet-supertitle">Royaume du Maroc · Ministère de l’Agriculture</div>
+          <div class="sheet-org">Direction Régionale de l’Agriculture de Marrakech-Safi</div>
+          <h1>Fiche technique institutionnelle</h1>
+          <div class="sheet-subtitle" id="sheet-subtitle">Chargement…</div>
+        </div>
+      </div>
+      <div class="sheet-actions no-print">
+        <button onclick="window.print()" class="btn-primary" type="button">🖨️ Imprimer</button>
+        <button id="btn-export-pdf" class="btn-primary" type="button">📄 Export PDF</button>
+      </div>
+    </header>
+
+    <section class="sheet-card">
+      <h2>Résumé de synthèse</h2>
+      <div class="stats-grid">
+        <div><span>Programmes</span><strong id="s-programmes">—</strong></div>
+        <div><span>Projets</span><strong id="s-projets">—</strong></div>
+        <div><span>Appels d’offre</span><strong id="s-ao">—</strong></div>
+        <div><span>Marchés</span><strong id="s-marches">—</strong></div>
+        <div><span>Communes</span><strong id="s-communes">—</strong></div>
+        <div><span>Budget total</span><strong id="s-budget">—</strong></div>
+        <div><span>Engagements</span><strong id="s-montant">—</strong></div>
+        <div><span>Paiements</span><strong id="s-paiements">—</strong></div>
+        <div><span>Reste</span><strong id="s-reste">—</strong></div>
+      </div>
+    </section>
+
+    <section class="sheet-grid">
+      <section class="sheet-card">
+        <h2>Périmètre filtré</h2>
+        <div id="criteria-list" class="criteria-list"></div>
+      </section>
+      <section class="sheet-card">
+        <h2>Cartographie des communes / projets</h2>
+        <div id="sheet-map"></div>
+      </section>
+    </section>
+
+    <section class="sheet-card">
+      <h2>Données détaillées</h2>
+      <table class="sheet-table" id="sheet-table">
+        <thead>
+          <tr>
+            <th>Programme</th>
+            <th>Projet</th>
+            <th>AO</th>
+            <th>Commune</th>
+            <th>Type bénéficiaire</th>
+            <th>Marché</th>
+            <th>Fournisseur</th>
+            <th>Engagement</th>
+            <th>Paiement</th>
+            <th>Reste</th>
+            <th>Exercice</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <footer class="sheet-footer">
+      <div>SIG de gestion des projets agricoles · DRA Marrakech-Safi</div>
+      <div id="sheet-footer-date"></div>
+    </footer>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/fiche-technique.js"></script>
+</body>
+</html>

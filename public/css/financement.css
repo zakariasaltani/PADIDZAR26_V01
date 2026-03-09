@@ -1,0 +1,110 @@
+.layout{
+  display:grid;
+  grid-template-columns: 520px 1fr;
+  gap:16px;
+}
+
+.card-lite{
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.form{ display:flex; flex-direction:column; gap:10px; }
+.form-row{ display:flex; flex-direction:column; gap:6px; }
+.form-row label{ font-size:12px; color: var(--muted); }
+
+.form-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+
+input, select{
+  padding:10px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.20);
+  color: var(--text);
+  outline:none;
+}
+
+.search{ width: 360px; }
+
+.btn{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(34,197,94,.18);
+  color: var(--text);
+  cursor:pointer;
+  font-weight:600;
+  transition:.18s ease;
+}
+.btn:hover{ transform: translateY(-1px); }
+
+.btn-secondary{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  font-weight:600;
+  transition:.18s ease;
+}
+.btn-secondary:hover{ transform: translateY(-1px); }
+
+.table-wrap{
+  overflow:auto;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.table{
+  width:100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+.table th, .table td{
+  padding:10px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  font-size: 13px;
+  vertical-align: top;
+}
+.table th{
+  text-align:left;
+  color: var(--muted);
+  font-weight:600;
+  background: rgba(255,255,255,.03);
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+.small-btn{
+  padding:7px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+}
+.small-btn.danger{ background: rgba(239,68,68,.18); }
+
+.hint{ margin-top:8px; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 1100px){
+  .layout{ grid-template-columns: 1fr; }
+  .search{ width: 100%; }
+}

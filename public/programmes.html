@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Programmes</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:20px}
+    nav a{margin-right:12px}
+    table{border-collapse:collapse;width:100%;margin-top:12px}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+    th{background:#f5f5f5}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .card{border:1px solid #ddd;padding:12px;border-radius:8px;margin-top:12px}
+    input,select,textarea{padding:8px;width:260px}
+    textarea{width:520px;height:70px}
+    button{padding:8px 12px;cursor:pointer}
+    .danger{background:#c0392b;color:#fff;border:0}
+    .small{font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/index.html">Accueil</a>
+    <a href="/fonds_financement.html">Fonds</a>
+    <a href="/programmes.html">Programmes</a>
+  </nav>
+
+  <h2>Gestion des Programmes</h2>
+
+  <div class="card">
+    <div class="row">
+      <input id="search" placeholder="Recherche (code/intitulé)..." />
+      <select id="filterFond"><option value="">Tous fonds</option></select>
+      <button id="btnSearch">Filtrer</button>
+      <button id="btnReset">Réinitialiser</button>
+    </div>
+    <div class="small">Budget accepte la virgule (ex: 1200000,50).</div>
+  </div>
+
+  <div class="card">
+    <h3 id="formTitle">Nouveau programme</h3>
+    <input type="hidden" id="id" />
+
+    <div class="row">
+      <div>
+        <div>Fond de financement</div>
+        <select id="fonds_financement_id"><option value="">-- Choisir --</option></select>
+      </div>
+      <div><div>Code</div><input id="code" placeholder="PRG-001" /></div>
+      <div><div>Intitulé *</div><input id="intitule" placeholder="Programme..." /></div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <div>Description</div>
+      <textarea id="description" placeholder="..."></textarea>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div><div>Année début</div><input id="annee_debut" placeholder="2025" /></div>
+      <div><div>Année fin</div><input id="annee_fin" placeholder="2027" /></div>
+      <div><div>Budget global</div><input id="budget_global" placeholder="ex: 3500000,00" /></div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <button id="btnSave">Enregistrer</button>
+      <button id="btnCancel">Annuler</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Liste</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Code</th>
+          <th>Intitulé</th>
+          <th>Fond</th>
+          <th>Années</th>
+          <th>Budget</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <script src="/js/programmes.js"></script>
+</body>
+</html>

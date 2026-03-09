@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WebSIG Marrakech-Safi - Géoportail</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    #map{
+      height: calc(100vh - 130px);
+      width: 100%;
+    }
+    .coords-indicator,
+    .geoportal-panel{
+      background: rgba(255,255,255,.96);
+      border:1px solid rgba(97, 73, 38, .18);
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.12);
+      color:#2b2b2b;
+    }
+    .coords-indicator{
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:600;
+    }
+    .geoportal-panel{
+      padding:12px;
+      min-width: 280px;
+      max-width: 320px;
+    }
+    .panel-title{
+      font-weight:800;
+      margin-bottom:6px;
+      color:#22543d;
+    }
+    .panel-status{
+      font-size:12px;
+      color:#4b5563;
+      margin-bottom:10px;
+    }
+    .panel-status.error{ color:#b91c1c; }
+    .legend-body{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height: 60vh;
+      overflow:auto;
+    }
+    .legend-item{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:8px;
+      border-radius:10px;
+      background:#f8fafc;
+      border:1px solid #eef2f7;
+    }
+    .legend-item.active{
+      background:#f0fdf4;
+      border-color:#bbf7d0;
+    }
+    .legend-swatch{
+      width:14px;
+      height:14px;
+      border-radius:999px;
+      margin-top:3px;
+      flex:0 0 14px;
+    }
+    .legend-name{
+      font-weight:700;
+      font-size:13px;
+    }
+    .legend-meta{
+      font-size:12px;
+      color:#6b7280;
+      margin-top:2px;
+    }
+    .popup-card{ min-width: 220px; }
+    .popup-title{
+      font-weight:800;
+      color:#22543d;
+      margin-bottom:4px;
+    }
+    .popup-subtitle{
+      font-weight:700;
+      margin-bottom:8px;
+      color:#5b4630;
+    }
+    .popup-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    .popup-table th,
+    .popup-table td{
+      padding:4px 6px;
+      border-bottom:1px solid #edf2f7;
+      text-align:left;
+      vertical-align:top;
+    }
+    .popup-table th{ width:40%; color:#4b5563; }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+
+  <div class="top-banner">
+    <div class="banner-title">Direction Régionale de l'Agriculture de MARRAKECH-SAFI</div>
+    <div class="banner-subtitle">Plate-Forme de gestion des projets</div>
+  </div>
+
+  <div id="navbar-slot"></div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/geoportal.js"></script>
+  <script src="/js/forbidden.js"></script>
+</body>
+</html>

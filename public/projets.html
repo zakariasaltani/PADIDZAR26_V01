@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WebSIG Marrakech-Safi - Projets</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projets.css" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+</head>
+<body>
+<!-- Bannière institutionnelle -->
+<div class="top-banner">
+  <div class="banner-title">
+    Direction Régionale de l'Agriculture de MARRAKECH-SAFI
+  </div>
+  <div class="banner-subtitle">
+    Plate-Forme de gestion des projets
+  </div>
+</div>
+  <div id="navbar-slot"></div>
+
+  <div class="container">
+    <div class="header" style="margin-bottom:10px;">
+      <div>
+        <h1 class="title">📌 Gestion des projets</h1>
+        <p class="subtitle">Gestion des projets avec type de bénéficiaire, canevas Excel et géométrie PostGIS.</p>
+      </div>
+      <div class="pill">API: /api/projets</div>
+    </div>
+
+    <div class="layout">
+
+      <!-- Form -->
+      <div class="card-lite">
+        <div class="card-head">
+          <h3 id="form-title">➕ Nouveau projet</h3>
+          <button class="btn-secondary" id="btn-reset" type="button">Réinitialiser</button>
+        </div>
+
+        <form id="form-projet" class="form">
+          <input type="hidden" name="id" />
+
+          <h3 style="margin:0;">🧩 Projet</h3>
+          <div class="form-2">
+            <div class="form-row">
+              <label>Programme</label>
+              <select name="programme_id" id="programme_id">
+                <option value="">-- Aucun --</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Statut</label>
+              <select name="statut">
+                <option value="EN_COURS">EN_COURS</option>
+                <option value="PLANIFIE">PLANIFIE</option>
+                <option value="TERMINE">TERMINE</option>
+                <option value="SUSPENDU">SUSPENDU</option>
+                <option value="IMPORTED">IMPORTED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Code *</label>
+              <input name="code" required placeholder="Ex: PRJ-001" />
+            </div>
+            <div class="form-row">
+              <label>Filière</label>
+              <input name="filiere" placeholder="Ex: Oléiculture" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Intitulé *</label>
+            <input name="intitule" required placeholder="Ex: Plantation oliviers..." />
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Budget prévisionnel (Dh)</label>
+              <input name="budget_previsionnel" placeholder="ex: 120000,50" />
+            </div>
+            <div class="form-row">
+              <label>Date début</label>
+              <input name="date_debut" type="date" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Date fin</label>
+            <input name="date_fin" type="date" />
+          </div>
+
+          <hr class="sep"/>
+
+          <h3 style="margin:0;">👥 Bénéficiaire</h3>
+          <div class="form-2">
+            <div class="form-row">
+              <label>Type de bénéficiaire</label>
+              <input name="type_beneficiaire" id="type_beneficiaire" placeholder="Ex: Coopérative, Association, GIE, Agriculteur..." />
+            </div>
+            <div class="form-row">
+              <label>Bénéficiaire enregistré</label>
+              <select name="beneficiaire_id" id="beneficiaire_id">
+                <option value="">-- Aucun --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Nom du bénéficiaire</label>
+            <input name="nom_beneficiaire" id="nom_beneficiaire" placeholder="Nom du bénéficiaire ou de la structure" />
+          </div>
+
+          <div class="form-row">
+            <label>Nom d’exploitation / support</label>
+            <input name="nom_exploitation" />
+          </div>
+
+          <h3 style="margin:6px 0 0;">🌾 Superficies (Ha)</h3>
+          <div class="form-3">
+            <div class="form-row">
+              <label>Superficie bour</label>
+              <input name="superficie_bour" placeholder="0,00" />
+            </div>
+            <div class="form-row">
+              <label>Superficie irriguée</label>
+              <input name="superficie_irriguee" placeholder="0,00" />
+            </div>
+            <div class="form-row">
+              <label>Superficie totale</label>
+              <input name="superficie_totale" placeholder="0,00" />
+            </div>
+          </div>
+
+          <h3 style="margin:6px 0 0;">📍 Localisation</h3>
+          <div class="form-3">
+            <div class="form-row">
+              <label>Commune rurale</label>
+              <input name="commune_rurale" />
+            </div>
+            <div class="form-row">
+              <label>Cercle</label>
+              <input name="cercle" />
+            </div>
+            <div class="form-row">
+              <label>Douar</label>
+              <input name="douar" />
+            </div>
+          </div>
+
+          <h3 style="margin:6px 0 0;">📄 Dossier & investissement</h3>
+          <div class="form-2">
+            <div class="form-row">
+              <label>Numéro de dossier</label>
+              <input name="numero_dossier" />
+            </div>
+            <div class="form-row">
+              <label>Superficie parcelle objet d’aide (Ha)</label>
+              <input name="superficie_parcelle_aide" placeholder="0,00" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Classe d’investissement</label>
+            <input name="classe_investissement" />
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Coût d’investissement (Dh)</label>
+              <input name="cout_investissement" placeholder="120000,50" />
+            </div>
+            <div class="form-row">
+              <label>Subvention (Dh)</label>
+              <input name="subvention" placeholder="80000,00" />
+            </div>
+          </div>
+
+          <h3 style="margin:6px 0 0;">🧭 Coordonnées (optionnel)</h3>
+          <div class="form-4">
+            <div class="form-row"><label>X1</label><input name="x1" /></div>
+            <div class="form-row"><label>Y1</label><input name="y1" /></div>
+            <div class="form-row"><label>X2</label><input name="x2" /></div>
+            <div class="form-row"><label>Y2</label><input name="y2" /></div>
+          </div>
+
+          <div class="form-row">
+            <div class="pill" style="display:inline-block; margin-top:8px;">
+              Géométrie: <span id="geom-status">Aucune</span>
+            </div>
+          </div>
+
+          <input type="hidden" name="geom" />
+
+          <button class="btn" type="submit">Enregistrer</button>
+          <div class="hint" id="msg-projet"></div>
+        </form>
+
+        <hr class="sep"/>
+
+        <h3 style="margin:0 0 10px;">📥 Import Excel</h3>
+        <form id="form-import" class="form">
+          <div class="form-row">
+            <label>Fichier Excel (.xlsx)</label>
+            <input type="file" id="file-excel" accept=".xlsx" required />
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Programme (défaut pour import)</label>
+              <select id="import_programme_id">
+                <option value="">-- Aucun --</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Statut (défaut import)</label>
+              <select id="import_statut">
+                <option value="IMPORTED">IMPORTED</option>
+                <option value="EN_COURS">EN_COURS</option>
+                <option value="PLANIFIE">PLANIFIE</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Filière (défaut import)</label>
+              <input id="import_filiere" placeholder="Ex: Oléiculture" />
+            </div>
+            <div class="form-row">
+              <label>Date début (défaut import)</label>
+              <input id="import_date_debut" type="date" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Date fin (défaut import)</label>
+            <input id="import_date_fin" type="date" />
+          </div>
+
+          <button class="btn" type="submit">Importer</button>
+          <div class="hint" id="msg-import"></div>
+        </form>
+
+        <hr class="sep"/>
+
+        <h3 style="margin:0 0 10px;">🗺️ Carte</h3>
+        <div id="map"></div>
+      </div>
+
+      <!-- List -->
+      <div class="card-lite">
+        <div class="card-head">
+          <h3>📋 Liste</h3>
+          <input id="search-projets" class="search" placeholder="Rechercher (code, intitulé, bénéficiaire, type, dossier, commune...)" />
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" id="table-projets">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Intitulé</th>
+                <th>Bénéficiaire</th>
+                <th>Statut</th>
+                <th>Budget</th>
+                <th>Coût</th>
+                <th>Subv.</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="hint" id="count-projets"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="js/projets.js"></script>
+</body>
+</html>

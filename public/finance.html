@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WebSIG Marrakech-Safi - Gestion financière</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/finance.css" />
+</head>
+<body>
+<!-- Bannière institutionnelle -->
+<div class="top-banner">
+  <div class="banner-title">
+    Direction Régionale de l'Agriculture de MARRAKECH-SAFI
+  </div>
+  <div class="banner-subtitle">
+    Plate-Forme de gestion des projets
+  </div>
+</div>
+
+  <div id="navbar-slot"></div>
+
+  <div class="container">
+    <div class="header" style="margin-bottom:10px;">
+      <div>
+        <h1 class="title">💰 Gestion financière</h1>
+        <p class="subtitle">Budgets, marchés, fournisseurs et paiements (prototype opérationnel).</p>
+      </div>
+      <div class="pill">API: /api/finance/*</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab" data-tab="programmes">Programmes</button>
+      <button class="tab active" data-tab="fournisseurs">Fournisseurs</button>
+      <button class="tab" data-tab="imputations">Imputations</button>
+      <button class="tab" data-tab="ao">Appels d'offres</button>
+      <button class="tab" data-tab="marches">Marchés</button>
+      <button class="tab" data-tab="documents">Documents marchés</button>
+      <button class="tab" data-tab="paiements">Paiements</button>
+      <button class="tab" data-tab="synthese">Synthèse</button>
+    </div>
+
+    <!-- Programmes -->
+    <section class="panel" id="panel-programmes">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <div class="card-head">
+            <h3 id="programme-form-title">➕ Ajouter / Modifier un programme</h3>
+            <button class="btn-secondary" id="btn-programme-reset" type="button">Réinitialiser</button>
+          </div>
+
+          <form id="form-programme" class="form">
+            <input type="hidden" name="id" />
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>Fond de financement</label>
+                <select id="select-fonds-programme" name="fonds_financement_id">
+                  <option value="">-- Aucun --</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Code</label>
+                <input name="code" placeholder="PRG-001" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>Intitulé *</label>
+              <input name="intitule" required placeholder="Programme..." />
+            </div>
+
+            <div class="form-row">
+              <label>Description</label>
+              <input name="description" placeholder="..." />
+            </div>
+
+            <div class="form-3">
+              <div class="form-row">
+                <label>Année début</label>
+                <input name="annee_debut" placeholder="2025" />
+              </div>
+              <div class="form-row">
+                <label>Année fin</label>
+                <input name="annee_fin" placeholder="2027" />
+              </div>
+              <div class="form-row">
+                <label>Budget global (MAD)</label>
+                <input name="budget_global" placeholder="ex: 3500000,00" />
+              </div>
+            </div>
+
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-programme"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des programmes</h3>
+            <div class="filters">
+              <select id="filter-fonds-programmes" class="search">
+                <option value="">Tous les fonds</option>
+              </select>
+              <input id="search-programmes" class="search" placeholder="Rechercher..." />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-programmes">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Code</th>
+                  <th>intitulé</th>
+                  <th>Fond</th>
+                  <th>Années</th>
+                  <th>Budget</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint" id="count-programmes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fournisseurs -->
+    <section class="panel active" id="panel-fournisseurs">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <h3>➕ Ajouter un fournisseur</h3>
+          <form id="form-fournisseur" class="form">
+            <div class="form-row">
+              <label>Nom *</label>
+              <input name="nom" required placeholder="Ex: Société Atlas" />
+            </div>
+            <div class="form-2">
+              <div class="form-row">
+                <label>ICE</label>
+                <input name="ice" placeholder="Ex: 001234" />
+              </div>
+              <div class="form-row">
+                <label>Téléphone</label>
+                <input name="telephone" placeholder="Ex: 0522..." />
+              </div>
+            </div>
+            <div class="form-2">
+              <div class="form-row">
+                <label>Email</label>
+                <input name="email" type="email" placeholder="contact@..." />
+              </div>
+              <div class="form-row">
+                <label>Adresse</label>
+                <input name="adresse" placeholder="Ville / Adresse" />
+              </div>
+            </div>
+
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-fournisseur"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des fournisseurs</h3>
+            <input id="search-fournisseurs" class="search" placeholder="Rechercher..." />
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-fournisseurs">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nom</th>
+                  <th>ICE</th>
+                  <th>Téléphone</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint" id="count-fournisseurs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Imputations -->
+    <section class="panel" id="panel-imputations">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <div class="card-head">
+            <h3 id="imputation-form-title">➕ Ajouter / Modifier une imputation</h3>
+            <button class="btn-secondary" id="btn-imputation-reset" type="button">Réinitialiser</button>
+          </div>
+
+          <form id="form-imputation" class="form">
+            <div class="form-3">
+              <div class="form-row">
+                <label>Exercice</label>
+                <input name="exercice" type="number" placeholder="2026" />
+              </div>
+              <div class="form-row">
+                <label>Code</label>
+                <input name="code" placeholder="Ex: 10.1" />
+              </div>
+              <div class="form-row">
+                <label>Nature *</label>
+                <input name="nature" required placeholder="Ex: Travaux / Prestations / Fournitures..." />
+              </div>
+            </div>
+
+            <div class="form-3">
+              <div class="form-row">
+                <label>N° Article</label>
+                <input name="numero_article" placeholder="..." />
+              </div>
+              <div class="form-row">
+                <label>N° paragraphe</label>
+                <input name="numero_paragraphe" placeholder="..." />
+              </div>
+              <div class="form-row">
+                <label>N° ligne</label>
+                <input name="numero_ligne" placeholder="..." />
+              </div>
+            </div>
+
+            <div class="form-3">
+              <div class="form-row">
+                <label>Montant report</label>
+                <input name="montant_report" type="number" step="0.01" placeholder="0.00" />
+              </div>
+              <div class="form-row">
+                <label>Montant consolidé</label>
+                <input name="montant_consolide" type="number" step="0.01" placeholder="0.00" />
+              </div>
+              <div class="form-row">
+                <label>Budget nouveau</label>
+                <input name="budget_nouveau" type="number" step="0.01" placeholder="0.00" />
+              </div>
+            </div>
+
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-imputation"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des imputations</h3>
+            <div class="hint">La <b>Nature</b> doit être unique (c’est la clé de liaison avec les marchés).</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-imputations">
+              <thead>
+                <tr>
+                  <th>Exercice</th>
+                  <th>Code</th>
+                  <th>N° Article</th>
+                  <th>N° paragraphe</th>
+                  <th>N° ligne</th>
+                  <th>Nature</th>
+                  <th>Montant report</th>
+                  <th>Montant consolidé</th>
+                  <th>Budget nouveau</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Appels d'offres -->
+    <section class="panel" id="panel-ao">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <div class="card-head">
+            <h3 id="ao-form-title">➕ Ajouter / Modifier un appel d'offres</h3>
+            <button class="btn-secondary" id="btn-ao-reset" type="button">Réinitialiser</button>
+          </div>
+
+          <form id="form-ao" class="form">
+            <input type="hidden" name="id" />
+            <div class="form-row">
+              <label>Programme *</label>
+              <select id="select-programme-ao" name="programme_id" required></select>
+            </div>
+            <div class="form-2">
+              <div class="form-row">
+                <label>N° AO *</label>
+                <input name="numero_ao" required placeholder="AO/2026/001" />
+              </div>
+              <div class="form-row">
+                <label>Statut</label>
+                <select name="statut">
+                  <option value="BROUILLON">BROUILLON</option>
+                  <option value="LANCE">LANCE</option>
+                  <option value="EN_ANALYSE">EN_ANALYSE</option>
+                  <option value="ATTRIBUE">ATTRIBUE</option>
+                  <option value="ANNULE">ANNULE</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Objet</label>
+              <input name="objet" placeholder="Objet de l'appel d'offres" />
+            </div>
+            <div class="form-3">
+              <div class="form-row">
+                <label>Date lancement</label>
+                <input name="date_lancement" type="date" />
+              </div>
+              <div class="form-row">
+                <label>Date ouverture plis</label>
+                <input name="date_ouverture_plis" type="date" />
+              </div>
+              <div class="form-row">
+                <label>Montant estimé</label>
+                <input name="montant_estime" type="number" step="0.01" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Observations</label>
+              <input name="observations" placeholder="Observations..." />
+            </div>
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-ao"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des AO</h3>
+            <div class="filters">
+              <select id="filter-programme-ao" class="search"><option value="">Tous les programmes</option></select>
+              <input id="search-ao" class="search" placeholder="Rechercher un AO..." />
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="table-ao">
+              <thead>
+                <tr>
+                  <th>ID</th><th>N° AO</th><th>Programme</th><th>Objet</th><th>Dates</th><th>Estimation</th><th>Marchés</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="hint" id="count-ao"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marchés -->
+    <section class="panel" id="panel-marches">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <h3>➕ Ajouter / Modifier un marché</h3>
+
+          <form id="form-marche" class="form">
+            <div class="form-row">
+              <label>Projet *</label>
+              <select id="select-projets" name="projet_id" required></select>
+            </div>
+
+            <div class="form-row">
+              <label>Appel d'offres</label>
+              <select id="select-ao-marche" name="ao_id"><option value="">-- Aucun --</option></select>
+            </div>
+
+            <div class="form-row">
+              <label>Fournisseur *</label>
+              <select id="select-fournisseurs" name="fournisseur_id" required></select>
+            </div>
+
+            <div class="form-row">
+              <label>Nature de la dépense (imputation)</label>
+              <select id="select-imputations" name="nature_depense">
+                <option value="">-- Sélectionner --</option>
+              </select>
+            </div>
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>N° marché *</label>
+                <input name="numero_marche" required placeholder="Ex: 12/2026" />
+              </div>
+              <div class="form-row">
+                <label>Montant</label>
+                <input name="montant" type="number" step="0.01" placeholder="0.00" />
+              </div>
+            </div>
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>Date signature</label>
+                <input name="date_signature" type="date" />
+              </div>
+              <div class="form-row">
+                <label>Statut</label>
+                <select name="statut">
+                  <option value="EN_COURS">EN_COURS</option>
+                  <option value="TERMINE">TERMINE</option>
+                  <option value="SUSPENDU">SUSPENDU</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>Objet</label>
+              <input name="objet" placeholder="Objet du marché" />
+            </div>
+
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-marche"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des marchés</h3>
+            <div class="filters">
+              <select id="filter-projet-marches" class="search">
+                <option value="">Tous les projets</option>
+              </select>
+              <select id="filter-ao-marches" class="search">
+                <option value="">Tous les AO</option>
+              </select>
+              <input id="search-marches" class="search" placeholder="Rechercher..." />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-marches">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>N° Marché</th>
+                  <th>Projet</th>
+                  <th>AO</th>
+                  <th>Fournisseur</th>
+                  <th>Nature</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint" id="count-marches"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Documents des marchés -->
+    <section class="panel" id="panel-documents">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📎 Upload de document marché</h3>
+          </div>
+
+          <form id="form-marche-document" class="form">
+            <div class="form-row">
+              <label>N° marché *</label>
+              <input name="numero_marche" id="doc-numero-marche" list="liste-numero-marches" required placeholder="Ex: 12/2026" />
+              <datalist id="liste-numero-marches"></datalist>
+            </div>
+
+            <div class="form-row">
+              <label>Document *</label>
+              <input name="document" type="file" required />
+            </div>
+
+            <div class="form-row">
+              <label>Description</label>
+              <input name="description" placeholder="Ex: CPS, ordre de service, PV de réception..." />
+            </div>
+
+            <button class="btn" type="submit">Téléverser</button>
+            <div class="hint" id="msg-marche-document"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>🗂️ Documents par marché</h3>
+            <div class="filters">
+              <input id="search-marche-documents" class="search" placeholder="Filtrer par N° marché, projet, fournisseur..." />
+              <button class="btn-secondary" id="btn-refresh-marche-documents" type="button">Actualiser</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-marche-documents">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>N° Marché</th>
+                  <th>Projet</th>
+                  <th>AO</th>
+                  <th>Fournisseur</th>
+                  <th>Document</th>
+                  <th>Description</th>
+                  <th>Taille</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint" id="count-marche-documents"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paiements -->
+    <section class="panel" id="panel-paiements">
+      <div class="panel-grid">
+        <div class="card-lite">
+          <h3>➕ Ajouter un paiement</h3>
+
+          <form id="form-paiement" class="form">
+            <div class="form-row">
+              <label>Marché *</label>
+              <!-- name peut être marche_id ; côté backend on accepte et on map vers id_marche -->
+              <select id="select-marches" name="marche_id" required></select>
+            </div>
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>Nature d'imputation *</label>
+                <select id="select-imputation-paiement" name="imputation_id" required></select>
+              </div>
+              <div class="form-row">
+                <label>Source d'imputation *</label>
+                <select name="imputation_source" required>
+                  <option value="REPORT">Montant report</option>
+                  <option value="CONSOLIDE">Montant consolidé</option>
+                  <option value="NOUVEAU">Budget nouveau</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>Montant *</label>
+                <input name="montant" type="number" step="0.01" required placeholder="0.00" />
+              </div>
+              <div class="form-row">
+                <label>Date paiement *</label>
+                <input name="date_paiement" type="date" required />
+              </div>
+            </div>
+
+            <div class="form-2">
+              <div class="form-row">
+                <label>Mode</label>
+                <input name="mode" placeholder="VIREMENT / CHEQUE..." />
+              </div>
+              <div class="form-row">
+                <label>Référence</label>
+                <input name="reference" placeholder="REF..." />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>Observation</label>
+              <input name="observation" placeholder="Note..." />
+            </div>
+
+            <button class="btn" type="submit">Enregistrer</button>
+            <div class="hint" id="msg-paiement"></div>
+          </form>
+        </div>
+
+        <div class="card-lite">
+          <div class="card-head">
+            <h3>📋 Liste des paiements</h3>
+            <div class="filters">
+              <select id="filter-marche-paiements" class="search">
+                <option value="">Tous les marchés</option>
+              </select>
+              <input id="search-paiements" class="search" placeholder="Rechercher..." />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="table-paiements">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Marché</th>
+                  <th>Imputation</th>
+                  <th>Source</th>
+                  <th>Montant</th>
+                  <th>Date</th>
+                  <th>Mode</th>
+                  <th>Référence</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint" id="count-paiements"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Synthèse -->
+    <section class="panel" id="panel-synthese">
+      <div class="card-lite">
+        <div class="card-head">
+          <h3>📈 Synthèse financière par projet</h3>
+
+          <div class="filters">
+            <select id="filter-annee" class="search">
+              <option value="">Toutes années</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+
+            <input id="filter-date-from" class="search" type="date" />
+            <input id="filter-date-to" class="search" type="date" />
+
+            <button id="btn-refresh-synthese" class="btn-secondary" type="button">Actualiser</button>
+            <button id="btn-export-csv" class="btn-secondary" type="button">Export CSV</button>
+            <button id="btn-print" class="btn-secondary" type="button">PDF/Imprimer</button>
+
+            <input id="search-synthese" class="search" placeholder="Rechercher..." />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" id="table-synthese">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Programme</th>
+                <th>Fonds</th>
+                <th>intitule</th>
+                <th>Statut</th>
+                <th>Budget (MAD)</th>
+                <th>AO</th>
+                <th>Marchés</th>
+                <th>Marchés (MAD)</th>
+                <th>Payé (MAD)</th>
+                <th>Reste (MAD)</th>
+                <th>% payé / marchés</th>
+                <th>Lien</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="hint" id="count-synthese"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/finance.js"></script>
+  <script src="/js/forbidden.js"></script>
+
+</body>
+</html>

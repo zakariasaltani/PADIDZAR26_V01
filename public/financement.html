@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WebSIG Marrakech-Safi - Fonds de financement</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/financement.css" />
+</head>
+<body>
+<!-- Bannière institutionnelle -->
+<div class="top-banner">
+  <div class="banner-title">
+    Direction Régionale de l'Agriculture de MARRAKECH-SAFI
+  </div>
+  <div class="banner-subtitle">
+    Plate-Forme de gestion des projets
+  </div>
+</div>
+
+  <div id="navbar-slot"></div>
+
+  <div class="container">
+    <div class="header" style="margin-bottom:10px;">
+      <div>
+        <h1 class="title">🏦 Fonds de financement</h1>
+        <p class="subtitle">Gestion des sources de financement (type, nom, contact, période, statut).</p>
+      </div>
+      <div class="pill">API: /api/fonds</div>
+    </div>
+
+    <div class="layout">
+      <!-- Form -->
+      <div class="card-lite">
+        <div class="card-head">
+          <h3 id="form-title">➕ Nouveau fond</h3>
+          <button class="btn-secondary" id="btn-reset" type="button">Réinitialiser</button>
+        </div>
+
+        <form id="form-fond" class="form">
+          <input type="hidden" name="id" />
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Type source *</label>
+              <select name="type_source" required>
+                <option value="PUBLIC">PUBLIC</option>
+                <option value="PRIVE">PRIVE</option>
+                <option value="BAILLEUR">BAILLEUR</option>
+                <option value="ONG">ONG</option>
+                <option value="COOPERATION">COOPERATION</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Statut</label>
+              <select name="statut">
+                <option value="ACTIF">ACTIF</option>
+                <option value="INACTIF">INACTIF</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Nom *</label>
+            <input name="nom" required placeholder="Ex: INDH / Région Casablanca..." />
+          </div>
+
+          <div class="form-2">
+            <div class="form-row">
+              <label>Code</label>
+              <input name="code" placeholder="Ex: FND-001" />
+            </div>
+            <div class="form-row">
+              <label>Devise</label>
+              <input name="devise" placeholder="MAD" value="MAD" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Description</label>
+            <input name="description" placeholder="Remarques / détails..." />
+          </div>
+
+          <h4 style="margin:10px 0 0;">Contact</h4>
+          <div class="form-2">
+            <div class="form-row">
+              <label>Nom</label>
+              <input name="contact_nom" placeholder="Nom du contact" />
+            </div>
+            <div class="form-row">
+              <label>Téléphone</label>
+              <input name="contact_tel" placeholder="06..." />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Email</label>
+            <input name="contact_email" type="email" placeholder="contact@..." />
+          </div>
+
+          <h4 style="margin:10px 0 0;">Période</h4>
+          <div class="form-2">
+            <div class="form-row">
+              <label>Date début</label>
+              <input name="date_debut" type="date" />
+            </div>
+            <div class="form-row">
+              <label>Date fin</label>
+              <input name="date_fin" type="date" />
+            </div>
+          </div>
+
+          <button class="btn" type="submit" id="btn-save">Enregistrer</button>
+          <div class="hint" id="msg-fond"></div>
+        </form>
+      </div>
+
+      <!-- Table -->
+      <div class="card-lite">
+        <div class="card-head">
+          <h3>📋 Liste des fonds</h3>
+          <input id="search-fonds" class="search" placeholder="Rechercher (type, nom, code, statut)..." />
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" id="table-fonds">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Nom</th>
+                <th>Code</th>
+                <th>Devise</th>
+                <th>Statut</th>
+                <th>Période</th>
+                <th>Contact</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="hint" id="count-fonds"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/financement.js"></script>
+  <script src="/js/forbidden.js"></script>
+
+</body>
+</html>

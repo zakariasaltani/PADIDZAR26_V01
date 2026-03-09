@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Connexion - WebSIG Marrakech-Safi</title>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    body{min-height:100vh; display:flex; align-items:center; justify-content:center;}
+    .card{width:min(420px, 92vw); background: rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.10);
+      border-radius:16px; padding:22px;}
+    .card h1{margin:0 0 6px 0;}
+    .card p{margin:0 0 18px 0; opacity:.85;}
+    .form-row{display:flex; flex-direction:column; gap:6px; margin:12px 0;}
+    input{padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.20); color: var(--text);}
+    .btn{width:100%; padding:10px 12px; border-radius:12px; border:0; cursor:pointer; background: rgba(34,197,94,.95); color:#051b10; font-weight:700;}
+    .hint{margin-top:12px; font-size:13px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔐 Connexion</h1>
+    <p>Veuillez saisir votre identifiant et mot de passe.</p>
+
+    <form id="login-form">
+      <div class="form-row">
+        <label>Identifiant</label>
+        <input name="username" autocomplete="username" required />
+      </div>
+      <div class="form-row">
+        <label>Mot de passe</label>
+        <input name="password" type="password" autocomplete="current-password" required />
+      </div>
+      <button class="btn" type="submit">Se connecter</button>
+      <div class="hint" id="msg"></div>
+    </form>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    const form = document.getElementById("login-form");
+    const msg = document.getElementById("msg");
+
+    // déjà connecté -> accueil
+    if (localStorage.getItem("token")) window.location.href = "index.html";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "Connexion...";
+      msg.style.color = "rgba(255,255,255,.85)";
+
+      const fd = new FormData(form);
+      const body = { username: fd.get("username"), password: fd.get("password") };
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json().catch(()=> ({}));
+        if (!res.ok) throw new Error(data.error || "Erreur de connexion");
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "index.html";
+      } catch (err) {
+        msg.textContent = "❌ " + (err.message || "Erreur");
+        msg.style.color = "rgba(239,68,68,.95)";
+      }
+    });
+  </script>
+</body>
+</html>
