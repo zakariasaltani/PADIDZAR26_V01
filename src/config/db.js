@@ -1,15 +1,19 @@
+
 const { Pool } = require("pg");
 
+const connectionString = process.env.DATABASE_URL;
+
+if(!connectionString){
+  throw new Error("DATABASE_URL manquante");
+}
+
 const pool = new Pool({
-  user: "postgres",          // adapte si besoin
-  host: "localhost",
-  database: "DB_MS2026",
-  password: "Zitouni262015",
-  port: 5432,
+  connectionString,
+  ssl: { rejectUnauthorized: false }
 });
 
-pool.on("connect", () => {
-  console.log("✅ Connecté à PostgreSQL / PostGIS");
+pool.on("connect", ()=>{
+  console.log("Connecté à PostgreSQL / Neon");
 });
 
 module.exports = pool;

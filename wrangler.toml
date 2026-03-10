@@ -1,0 +1,6 @@
+
+name = "padidzar-app"
+compatibility_date = "2024-01-01"
+
+[vars]
+# DATABASE_URL will be added in Cloudflare dashboard
