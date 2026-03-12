@@ -16,6 +16,10 @@ const financementRoutes = require("./routes/financement.routes");
 const programmesRoutes = require("./routes/programmes.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
 const beneficiairesRoutes = require("./routes/beneficiaires.routes");
+const helmet = require("helmet");
+const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+
 
 const app = express();
 
@@ -43,5 +47,10 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api", beneficiairesRoutes);
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
-
+app.use(helmet());
+app.use(compression());
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300
+}));
 module.exports = app;
