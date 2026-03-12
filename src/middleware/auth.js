@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "CHANGE_ME_SUPER_SECRET";
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET manquant");
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 /**
  * Extrait le token JWT depuis:
