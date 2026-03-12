@@ -53,10 +53,5 @@ app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300
 }));
-app.use((err, req, res, next) => {
-  console.error("Erreur non gérée :", err);
-  res.status(500).json({
-    error: "Erreur interne du serveur"
-  });
-});
+
 module.exports = app;
